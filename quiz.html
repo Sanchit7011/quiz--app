@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Modern Quiz App</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      color: #333;
+    }
+
+    .container {
+      width: 420px;
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h2 { text-align: center; margin-bottom: 10px; }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      padding: 10px;
+      margin-top: 10px;
+      width: 100%;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+
+    .btn { background: #667eea; color: white; }
+    .btn:hover { transform: scale(1.05); }
+
+    .option {
+      background: #f1f3f6;
+      margin: 6px 0;
+    }
+
+    .option:hover { background: #e2e6f0; }
+
+    .correct { background: #4caf50 !important; color: white; }
+    .wrong { background: #f44336 !important; color: white; }
+
+    .hidden { display: none; }
+
+    .progress {
+      height: 8px;
+      background: #ddd;
+      border-radius: 5px;
+      margin-bottom: 15px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      transition: width 0.3s ease;
+    }
+
+    #score {
+      text-align: center;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    ul { padding-left: 20px; }
+
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- LOGIN -->
+  <div id="login">
+    <h2>Welcome 👋</h2>
+    <input type="text" id="username" placeholder="Enter your name">
+    <button class="btn" onclick="login()">Start</button>
+  </div>
+
+  <!-- SETUP -->
+  <div id="setup" class="hidden">
+    <h2>Create Quiz</h2>
+    <textarea id="inputData" placeholder="word - meaning"></textarea>
+    <button class="btn" onclick="startQuiz()">Start Quiz</button>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="quiz" class="hidden">
+    <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+    <h3 id="question"></h3>
+    <div id="options"></div>
+    <button class="btn" onclick="nextQuestion()">Next</button>
+    <div id="score"></div>
+  </div>
+
+  <!-- RESULT -->
+  <div id="result" class="hidden">
+    <h2>🎉 Finished!</h2>
+    <p id="finalScore"></p>
+    <h3>History</h3>
+    <ul id="history"></ul>
+  </div>
+
+</div>
+
+<script>
+let user = "";
+let data = [];
+let questions = [];
+let current = 0;
+let correct = 0;
+let wrong = 0;
+let answered = {};
+
+function login() {
+  const name = document.getElementById("username").value.trim();
+  if (!name) return alert("Enter name");
+  user = name;
+  document.getElementById("login").classList.add("hidden");
+  document.getElementById("setup").classList.remove("hidden");
+}
+
+function shuffle(arr) {
+  return arr.sort(() => Math.random() - 0.5);
+}
+
+function startQuiz() {
+  const lines = document.getElementById("inputData").value.split("\n");
+  data = [];
+
+  lines.forEach(line => {
+    if (!line.includes("-")) return;
+    let [w, ...m] = line.split("-");
+    if (!w || !m) return;
+    data.push({ word: w.trim(), meaning: m.join("-").trim() });
+  });
+
+  if (data.length < 4) return alert("Enter at least 4 pairs");
+
+  questions = shuffle([...data]);
+  current = 0;
+  correct = 0;
+  wrong = 0;
+  answered = {};
+
+  document.getElementById("setup").classList.add("hidden");
+  document.getElementById("quiz").classList.remove("hidden");
+
+  loadQuestion();
+}
+
+function loadQuestion() {
+  const q = questions[current];
+  document.getElementById("question").innerText = `Q${current+1}: ${q.word}`;
+
+  let options = [q.meaning];
+  let others = shuffle(data.filter(x => x.word !== q.word));
+
+  for (let i = 0; i < 3; i++) options.push(others[i].meaning);
+  options = shuffle(options);
+
+  const div = document.getElementById("options");
+  div.innerHTML = "";
+
+  options.forEach(opt => {
+    const btn = document.createElement("button");
+    btn.innerText = opt;
+    btn.className = "option";
+    btn.onclick = () => select(btn, opt, q.meaning);
+    div.appendChild(btn);
+  });
+
+  updateProgress();
+  updateScore();
+}
+
+function select(btn, val, correctAns) {
+  if (answered[current]) return;
+
+  document.querySelectorAll(".option").forEach(b => {
+    if (b.innerText === correctAns) b.classList.add("correct");
+  });
+
+  if (val === correctAns) {
+    btn.classList.add("correct");
+    correct++;
+  } else {
+    btn.classList.add("wrong");
+    wrong++;
+  }
+
+  answered[current] = true;
+  updateScore();
+}
+
+function nextQuestion() {
+  if (current < questions.length - 1) {
+    current++;
+    loadQuestion();
+  } else finish();
+}
+
+function updateProgress() {
+  document.getElementById("progressBar").style.width = ((current+1)/questions.length*100)+"%";
+}
+
+function updateScore() {
+  document.getElementById("score").innerText = `✅ ${correct}   ❌ ${wrong}`;
+}
+
+function finish() {
+  document.getElementById("quiz").classList.add("hidden");
+  document.getElementById("result").classList.remove("hidden");
+
+  const scoreText = `${correct}/${questions.length}`;
+  document.getElementById("finalScore").innerText = "Score: " + scoreText;
+
+  let history = JSON.parse(localStorage.getItem(user)) || [];
+  history.push(scoreText);
+  localStorage.setItem(user, JSON.stringify(history));
+
+  const ul = document.getElementById("history");
+  ul.innerHTML = "";
+  history.forEach(s => {
+    let li = document.createElement("li");
+    li.innerText = s;
+    ul.appendChild(li);
+  });
+}
+</script>
+
+</body>
+</html>
