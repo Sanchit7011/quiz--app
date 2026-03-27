@@ -223,6 +223,14 @@ let correct = 0;
 let wrong = 0;
 let answered = {};
 
+auth.onAuthStateChanged(u => {
+  if (u) {
+    user = u.email;
+    document.getElementById("loginBox").style.display = "none";
+    document.getElementById("setup").classList.remove("hidden");
+  }
+});
+
 function signup() {
 alert("Signup clicked");
 
@@ -237,14 +245,6 @@ alert("Signup clicked");
 }
 
 function login() {
-
-auth.onAuthStateChanged(u => {
-  if (u) {
-    user = u.email;
-    document.getElementById("loginBox").style.display = "none";
-    document.getElementById("setup").classList.remove("hidden");
-  }
-});
 
   const email = document.getElementById("username").value;
   const password = document.getElementById("password").value;
