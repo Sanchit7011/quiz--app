@@ -225,6 +225,8 @@ let answered = {};
 
 auth.onAuthStateChanged(u => {
   if (u) {
+    alert("Login successful 🚀");
+
     user = u.email;
     document.getElementById("loginBox").style.display = "none";
     document.getElementById("setup").classList.remove("hidden");
@@ -251,15 +253,6 @@ function login() {
 
   auth.signInWithEmailAndPassword(email, password)
     .then(() => {
-      alert("Login successful 🚀");
-
-user = email;
-      
-document.getElementById("username").style.display = "none";
-document.getElementById("password").style.display = "none";
-
-document.querySelectorAll("button")[0].style.display = "none";
-document.querySelectorAll("button")[1].style.display = "none";
  document.getElementById("setup").classList.remove("hidden");
     })
     .catch(err => alert(err.message));
