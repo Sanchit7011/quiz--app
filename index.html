@@ -161,11 +161,12 @@
 <div class="container">
 
   <!-- LOGIN -->
+  <div id="loginBox">
   <input type="email" id="username" placeholder="Email">
-<input type="password" id="password" placeholder="Password">
-
-<button onclick="signup()">Signup</button>
-<button onclick="login()">Login</button>
+  <input type="password" id="password" placeholder="Password">
+  <button onclick="signup()">Signup</button>
+  <button onclick="login()">Login</button>
+</div>
 
   <!-- SETUP -->
   <div id="setup" class="hidden">
@@ -236,6 +237,15 @@ alert("Signup clicked");
 }
 
 function login() {
+
+auth.onAuthStateChanged(u => {
+  if (u) {
+    user = u.email;
+    document.getElementById("loginBox").style.display = "none";
+    document.getElementById("setup").classList.remove("hidden");
+  }
+});
+
   const email = document.getElementById("username").value;
   const password = document.getElementById("password").value;
 
@@ -256,7 +266,11 @@ document.querySelectorAll("button")[1].style.display = "none";
 }
 
 function shuffle(arr) {
-  return arr.sort(() => Math.random() - 0.5);
+  for (let i = arr.length - 1; i > 0; i--) {
+    let j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
 }
 
 function startQuiz() {
