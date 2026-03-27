@@ -198,8 +198,8 @@
 
 <script>
 const firebaseConfig = {
-  apiKey: "YOUR_NEW_KEY",
-  authDomain: "AIzaSyCwCZn009bOhCvipzlxRfubORWOxi_X1xU",
+  apiKey: "AIzaSyCwCZn009bOhCvipzlxRfubORWOxi_X1xU",
+  authDomain: "quiz-app-f3c79.firebaseapp.com",
   projectId: "quiz-app-f3c79",
 };
 
@@ -246,9 +246,6 @@ function login() {
        document.getElementById("setup").classList.remove("hidden");
     })
     .catch(err => alert(err.message));
-}
-  document.getElementById("login").classList.add("hidden");
-  document.getElementById("setup").classList.remove("hidden");
 }
 
 function shuffle(arr) {
