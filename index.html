@@ -160,22 +160,6 @@
       text-align: center;
       font-weight: bold;
     }
-
-    .drag-item {
-      padding: 10px;
-      margin: 8px;
-      background: rgba(255,255,255,0.2);
-      border-radius: 8px;
-      cursor: grab;
-    }
-    
-    #dropZone {
-      margin-top: 15px;
-      padding: 20px;
-      border: 2px dashed white;
-      border-radius: 10px;
-      min-height: 50px;
-    }
     
    /* 📱 Mobile Responsive Design */
 @media (max-width: 480px) {
@@ -284,15 +268,7 @@
     <textarea id="inputData" placeholder="word - meaning"></textarea>
     <button class="btn" onclick="startQuiz()">Start Quiz</button>
   </div>
-
-  <!--  DRAG & DROP QUESTIONS  -->
-  <div id="dragContainer">
-    <div class="drag-item" draggable="true">Answer 1</div>
-    <div class="drag-item" draggable="true">Answer 2</div>
-  </div>
-  
-  <div id="dropZone">Drop here</div>
-  
+ 
   <!-- QUIZ -->
   <div id="quiz" class="hidden">
     <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
@@ -345,24 +321,6 @@ let wrong = 0;
 let answered = {};
 let time = 10;
 let timerInterval;
-let draggedItem = null;
-
-document.addEventListener("dragstart", e => {
-  if (e.target.classList.contains("drag-item")) {
-    draggedItem = e.target;
-  }
-});
-
-const dropZone = document.getElementById("dropZone");
-
-dropZone.addEventListener("dragover", e => e.preventDefault());
-
-dropZone.addEventListener("drop", () => {
-  if (draggedItem) {
-    dropZone.innerText = draggedItem.innerText;
-    draggedItem = null;
-  }
-});
   
 auth.onAuthStateChanged(u => {
   if (u) {
