@@ -81,24 +81,29 @@
       transform: scale(1.02);
     }
     
-    .correct { background: #4caf50 !important; color: white; }
-    .wrong { background: #f44336 !important; color: white; }
+    .correct {
+      background: #4CAF50 !important;
+      color: white;
+    }
+    
+    .wrong {
+      background: #ff4d4d !important;
+      color: white;
+    }
 
     .hidden { display: none; }
 
     .progress {
-      height: 8px;
-      background: #ddd;
-      border-radius: 5px;
-      margin-bottom: 15px;
+      height: 10px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 20px;
       overflow: hidden;
     }
-
+    
     .progress-bar {
       height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #667eea, #764ba2);
-      transition: width 0.3s ease;
+      background: linear-gradient(90deg, #00c6ff, #0072ff);
+      transition: width 0.4s ease;
     }
 
     #score {
@@ -143,8 +148,20 @@
   }
 
   input, textarea {
-    font-size: 14px;
-    padding: 8px;
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    margin: 8px 0;
+  
+    background: rgba(255,255,255,0.15);
+    color: white;
+  }
+  
+  input::placeholder,
+  textarea::placeholder {
+    color: rgba(255,255,255,0.6);
   }
 
   button {
