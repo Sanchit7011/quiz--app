@@ -242,7 +242,9 @@ function login() {
   auth.signInWithEmailAndPassword(email, password)
     .then(() => {
       alert("Login successful 🚀");
-       document.getElementById("setup").classList.remove("hidden");
+      
+document.getElementById("loginBox").style.display = "none";
+ document.getElementById("setup").classList.remove("hidden");
     })
     .catch(err => alert(err.message));
 }
@@ -354,9 +356,6 @@ function finish() {
     ul.appendChild(li);
   });
 }
-
-document.querySelectorAll("input, button").forEach(el => el.style.display = "none");
-</script>
 
 </body>
 </html>
