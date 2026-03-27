@@ -214,7 +214,7 @@ const auth = firebase.auth();
 
 <script>
 
-let user = "";
+let user = email;
 let data = [];
 let questions = [];
 let current = 0;
@@ -243,7 +243,11 @@ function login() {
     .then(() => {
       alert("Login successful 🚀");
       
-document.getElementById("loginBox").style.display = "none";
+document.getElementById("username").style.display = "none";
+document.getElementById("password").style.display = "none";
+
+document.querySelectorAll("button")[0].style.display = "none";
+document.querySelectorAll("button")[1].style.display = "none";
  document.getElementById("setup").classList.remove("hidden");
     })
     .catch(err => alert(err.message));
