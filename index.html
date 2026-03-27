@@ -117,6 +117,66 @@
     }
 
     ul { padding-left: 20px; }
+
+    :root {
+      --bg: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      --card: rgba(255,255,255,0.1);
+      --text: white;
+    }
+    
+    .light {
+      --bg: linear-gradient(135deg, #ffffff, #e0e0e0);
+      --card: white;
+      --text: black;
+    }
+
+    .timer {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      margin: 10px auto;
+    }
+    
+    .timer svg {
+      width: 100px;
+      height: 100px;
+      transform: rotate(-90deg);
+    }
+    
+    .timer circle {
+      fill: none;
+      stroke: #667eea;
+      stroke-width: 8;
+      stroke-dasharray: 283;
+      stroke-dashoffset: 0;
+      transition: stroke-dashoffset 1s linear;
+    }
+    
+    #timeText {
+      position: absolute;
+      top: 35px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .drag-item {
+      padding: 10px;
+      margin: 8px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 8px;
+      cursor: grab;
+    }
+    
+    #dropZone {
+      margin-top: 15px;
+      padding: 20px;
+      border: 2px dashed white;
+      border-radius: 10px;
+      min-height: 50px;
+    }
+    
    /* 📱 Mobile Responsive Design */
 @media (max-width: 480px) {
 
@@ -201,6 +261,15 @@
 <body>
 <div class="container">
 
+  <button id="themeToggle" class="small-btn">🌙 Toggle Theme</button>
+
+  <div class="timer">
+    <svg>
+      <circle cx="50" cy="50" r="45"></circle>
+    </svg>
+    <span id="timeText">10</span>
+  </div>
+  
   <!-- LOGIN -->
   <div id="loginBox">
   <input type="email" id="username" placeholder="Email">
@@ -216,6 +285,14 @@
     <button class="btn" onclick="startQuiz()">Start Quiz</button>
   </div>
 
+  <!--  DRAG & DROP QUESTIONS  -->
+  <div id="dragContainer">
+    <div class="drag-item" draggable="true">Answer 1</div>
+    <div class="drag-item" draggable="true">Answer 2</div>
+  </div>
+  
+  <div id="dropZone">Drop here</div>
+  
   <!-- QUIZ -->
   <div id="quiz" class="hidden">
     <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
@@ -255,6 +332,9 @@ const auth = firebase.auth();
 </script>
 
 <script>
+  document.getElementById("themeToggle").addEventListener("click", () => {
+  document.body.classList.toggle("light");
+});
 
 let user = '';
 let data = [];
@@ -263,7 +343,27 @@ let current = 0;
 let correct = 0;
 let wrong = 0;
 let answered = {};
+let time = 10;
+let timerInterval;
+let draggedItem = null;
 
+document.addEventListener("dragstart", e => {
+  if (e.target.classList.contains("drag-item")) {
+    draggedItem = e.target;
+  }
+});
+
+const dropZone = document.getElementById("dropZone");
+
+dropZone.addEventListener("dragover", e => e.preventDefault());
+
+dropZone.addEventListener("drop", () => {
+  if (draggedItem) {
+    dropZone.innerText = draggedItem.innerText;
+    draggedItem = null;
+  }
+});
+  
 auth.onAuthStateChanged(u => {
   if (u) {
 
@@ -284,6 +384,27 @@ alert("Signup clicked");
       alert("Signup successful ✅");
     })
     .catch(err => alert(err.message));
+}
+
+function startTimer() {
+  clearInterval(timerInterval);
+  time = 10;
+
+  const circle = document.querySelector("circle");
+  const timeText = document.getElementById("timeText");
+
+  timerInterval = setInterval(() => {
+    time--;
+    timeText.innerText = time;
+
+    const offset = 283 - (283 * time) / 10;
+    circle.style.strokeDashoffset = offset;
+
+    if (time <= 0) {
+      clearInterval(timerInterval);
+      nextQuestion();
+    }
+  }, 1000);
 }
 
 function login() {
@@ -328,6 +449,7 @@ function startQuiz() {
   document.getElementById("quiz").classList.remove("hidden");
 
   loadQuestion();
+  startTimer();
 }
 
 function loadQuestion() {
