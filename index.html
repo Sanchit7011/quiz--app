@@ -208,12 +208,6 @@ const auth = firebase.auth();
 </script>
 
 <script>
-const password = "Sanc7@11";
-let userPass = prompt("Enter Password");
-
-if (userPass !== password) {
-  document.body.innerHTML = "<h1>Access Denied</h1>";
-}
 
 let user = "";
 let data = [];
@@ -246,7 +240,6 @@ function login() {
        document.getElementById("setup").classList.remove("hidden");
     })
     .catch(err => alert(err.message));
-}
 
 function shuffle(arr) {
   return arr.sort(() => Math.random() - 0.5);
