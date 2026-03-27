@@ -449,10 +449,11 @@ function startQuiz() {
   document.getElementById("quiz").classList.remove("hidden");
 
   loadQuestion();
-  startTimer();
 }
 
 function loadQuestion() {
+  startTimer();
+  
   const q = questions[current];
   document.getElementById("question").innerText = `Q${current+1}: ${q.word}`;
 
