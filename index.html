@@ -309,7 +309,11 @@ const auth = firebase.auth();
 </script>
 
 <script>
-  document.getElementById("themeToggle").addEventListener("click", () => {
+  if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js");
+}
+
+ document.getElementById("themeToggle").addEventListener("click", () => {
   document.body.classList.toggle("light");
 });
 
