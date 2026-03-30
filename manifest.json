@@ -8,7 +8,7 @@
   "icons": [
     {
       "src": "quiz.png",
-      "sizes": "1024x1024",
+      "sizes": "2048x2048",
       "type": "image/png"
     }
   ]
